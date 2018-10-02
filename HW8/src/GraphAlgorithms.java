@@ -14,7 +14,59 @@ import java.util.Set;
  * @version 1.8
  */
 public class GraphAlgorithms {
+    /**
+     * Perform breadth first search on the given graph, starting at the start
+     * Vertex.  You will return a List of the vertices in the order that
+     * you visited them.  Make sure to include the starting vertex at the
+     * beginning of the list.
+     *
+     * When exploring a Vertex, make sure you explore in the order that the
+     * adjacency list returns the neighbors to you.  Failure to do so may
+     * cause you to lose points.
+     *
+     * You may import/use {@code java.util.Queue}, {@code java.util.Set},
+     * {@code java.util.Map}, {@code java.util.List}, and any classes
+     * that implement the aforementioned interfaces.
+     *
+     * @throws IllegalArgumentException if any input is null, or if
+     *         {@code start} doesn't exist in the graph
+     * @param start the Vertex you are starting at
+     * @param graph the Graph we are searching
+     * @param <T> the data type representing the vertices in the graph.
+     * @return a List of vertices in the order that you visited them
+     */
+    public static <T> List<Vertex<T>> breadthFirstSearch(Vertex<T> start,
+                                                         Graph<T> graph) {
+        if (start == null || graph == null) {
+            throw new IllegalArgumentException("null"
+                    + " cannot be used as input parameters!");
+        }
+        Map<Vertex<T>, List<VertexDistancePair<T>>> adj
+                = graph.getAdjacencyList();
+        if (adj.get(start) == null) {
+            throw new IllegalArgumentException("The starting "
+                    + "vertex is not in the graph!");
+        }
+        Queue<Vertex<T>> queue = new LinkedList<>();
+        queue.add(start);
+        List<Vertex<T>> list = new ArrayList<>();
+        list.add(start);
+        Set<Vertex<T>> visited = new HashSet<>();
+        while (!queue.isEmpty()) {
+            start = queue.remove();
+            visited.add(start);
+            for (int i = 0; i < adj.get(start).size(); i++) {
+                if (!visited.contains(adj.get(start).get(i).getVertex())) {
+                    queue.add(adj.get(start).get(i).getVertex());
+                    list.add(adj.get(start).get(i).getVertex());
+                    visited.add(adj.get(start).get(i).getVertex());
+                }
+            }
+        }
+        return list;
+    }
 
+    
     /**
      * Performs a depth first search (dfs) on the input graph, starting at
      * {@code start} which represents the starting vertex.
